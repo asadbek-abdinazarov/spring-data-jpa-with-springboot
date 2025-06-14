@@ -7,14 +7,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import uz.javachi.spring_data_jpa_with_spring_boot.jpa_repository.Post;
 import uz.javachi.spring_data_jpa_with_spring_boot.jpa_repository.PostRepository;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
+@EnableJpaAuditing
 public class SpringDataJpaWithSpringBootApplication {
 
     public static void main(String[] args) {
@@ -30,5 +34,10 @@ public class SpringDataJpaWithSpringBootApplication {
             });
             repository.saveAll(posts);
         };
+    }
+
+    @Bean
+    AuditorAware<Long> auditorAware (SessionUser sessionUser){
+        return ()-> Optional.ofNullable(sessionUser.getId());
     }
 }
