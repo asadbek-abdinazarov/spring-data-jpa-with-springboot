@@ -24,10 +24,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "from Post")
     List<Post> getAllPostsSortById(Sort sort);
 
-//    @Query(value = "from Post")
+    //    @Query(value = "from Post")
     @Query(nativeQuery = true,
             value = "select * from post",
-            countQuery =  "select count(*) from post")
+            countQuery = "select count(*) from post")
     Page<Post> getAllPageable(Pageable pageable);
 
     List<Post> id(Integer id);
@@ -39,4 +39,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Transactional
     @Query(value = "delete Post p where p.userId = ?1")
     void deletePostByUserId(Integer userId);
+
+
+    List<Post> findAllByTitleStartingWithIgnoreCase(String title);
 }

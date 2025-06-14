@@ -91,4 +91,9 @@ public class PostController {
     public Post save(@RequestBody Post post) {
         return repositoryCustom.save(post);
     }
+
+    @GetMapping("/by-title/{title}")
+    public ResponseEntity<List<Post>> get(@PathVariable String title) {
+        return ResponseEntity.ok(repository.findAllByTitleStartingWithIgnoreCase(title));
+    }
 }
