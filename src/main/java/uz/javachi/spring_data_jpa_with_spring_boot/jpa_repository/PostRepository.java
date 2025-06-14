@@ -40,6 +40,15 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "delete Post p where p.userId = ?1")
     void deletePostByUserId(Integer userId);
 
+//    List<IPosDto> findAllByUserIdLessThanEqual(Integer userId);
+
+    List<IPosDtoTwo> findAllByUserIdLessThanEqual(Integer userId);
+
+//    @Query(value = "select new uz.javachi.spring_data_jpa_with_spring_boot.jpa_repository.IPosDtoTwo(p.id, p.title) from Post p")
+    @Query(nativeQuery = true,
+            name = "Post.getOnlyIdAndTitle")
+    List<IPosDtoTwo> findAllBy(Integer userId);
+
 
     List<Post> findAllByTitleStartingWithIgnoreCase(String title);
 }

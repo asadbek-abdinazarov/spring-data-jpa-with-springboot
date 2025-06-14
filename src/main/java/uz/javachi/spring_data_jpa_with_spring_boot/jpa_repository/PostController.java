@@ -96,4 +96,14 @@ public class PostController {
     public ResponseEntity<List<Post>> get(@PathVariable String title) {
         return ResponseEntity.ok(repository.findAllByTitleStartingWithIgnoreCase(title));
     }
+/*
+    @GetMapping("/interface-projection/{userId}")
+    public ResponseEntity<List<IPosDto>> interfaceProjection(@PathVariable Integer userId) {
+        return ResponseEntity.ok(repository.findAllByUserIdLessThanEqual(userId));
+    }*/
+
+    @GetMapping("/class-projection/{userId}")
+    public ResponseEntity<List<IPosDtoTwo>> interfaceProjectionTwo(@PathVariable Integer userId) {
+        return ResponseEntity.ok(repository.findAllBy(userId));
+    }
 }
