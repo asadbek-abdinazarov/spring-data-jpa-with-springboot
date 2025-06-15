@@ -32,9 +32,4 @@ public class SpringDataJpaWithSpringBootApplication {
         };
     }
 
-    @Bean(name = "postPagedResourcesAssembler")
-    public PagedResourcesAssembler<Post> postPagedResourcesAssembler() {
-        return new PagedResourcesAssembler<>(new HateoasPageableHandlerMethodArgumentResolver(), null);
-    }
-
 }
