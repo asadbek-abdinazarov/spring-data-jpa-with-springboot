@@ -1,28 +1,35 @@
 package uz.javachi.spring_data_jpa_with_spring_boot.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import uz.javachi.spring_data_jpa_with_spring_boot.config.jwtConfig.JwtTokenFilter;
+import uz.javachi.spring_data_jpa_with_spring_boot.config.jwtConfig.JwtTokenUtil;
 import uz.javachi.spring_data_jpa_with_spring_boot.dtos.ErrorDto;
+import uz.javachi.spring_data_jpa_with_spring_boot.repositories.UsersRepository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,24 +39,38 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final JwtTokenUtil jwtTokenUtil;
+
+    private final UsersRepository usersRepository;
+
+    public SecurityConfig(JwtTokenUtil jwtTokenUtil, UsersRepository usersRepository) {
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.usersRepository = usersRepository;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(configurer -> {
                             configurer.configurationSource(corsConfigurationSource());
                             configurer.configure(http);
                         }
                 )
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
                 .exceptionHandling((ex) ->
                         {
                             ex.authenticationEntryPoint(authenticationEntryPoint(objectMapper));
                             ex.accessDeniedHandler(accessDeniedHandler(objectMapper));
                         }
-                );
+                )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(new JwtTokenFilter(jwtTokenUtil, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -59,6 +80,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService(usersRepository);
+    }
+
+
+   /* @Bean
     public UserDetailsService userDetailsService() {
 
         List<UserDetails> users = new ArrayList<>() {{
@@ -80,7 +107,7 @@ public class SecurityConfig {
         }};
 
         return new InMemoryUserDetailsManager(users);
-    }
+    }*/
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
@@ -130,4 +157,25 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/api/v1/**", configuration);
         return source;
     }
+
+    @Bean
+    public JwtParser jwtParser() {
+        return Jwts.parser()
+                .verifyWith(jwtTokenUtil.signKey())
+                .build();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return new ProviderManager(authenticationProvider(userDetailsService()));
+    }
+
+
 }
