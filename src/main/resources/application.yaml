@@ -1,8 +1,20 @@
 spring:
   application:
     name: spring-data-jpa-with-spring-boot
-  security:
-    user:
-      name: user
-      password: 123
-      roles: ADMIN
+#  security:
+#    user:
+#      name: user
+#      password: 123
+#      roles: ADMIN
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring_data_jpa
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: off
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+secret:
+  key: YnVfamF2YV9ub3RfcG9zc2libGVfYnV0X215X3BsYXNlX2l0
