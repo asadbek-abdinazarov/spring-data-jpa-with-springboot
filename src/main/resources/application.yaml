@@ -1,3 +1,8 @@
 spring:
   application:
     name: spring-data-jpa-with-spring-boot
+  jpa:
+    open-in-view: off
+
+api:
+  version: 1.0.1
