@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @ConfigurationProperties(prefix = "example")
 public class PersonProperties {
+    private List<String> languages;
+    private List<String> languages2;
     private Person person;
-
     private List<Person> peoples;
-
 }

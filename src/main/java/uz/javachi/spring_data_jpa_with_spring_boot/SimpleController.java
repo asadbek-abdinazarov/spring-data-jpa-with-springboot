@@ -14,20 +14,15 @@ public class SimpleController {
 
     private final PersonProperties personProperties;
 
-    @Value("${example.string:'Hello PDP'}")
-    private String string;
-
-    /*@Value("${example.languages}")
-    private List<String> languages;*/
-    @Value("#{'${example.languages}'.split('# ')}")
-    private List<String> languages;
-
-    @Value("#{${example.numbers}}")
-    private Map<String, Integer> numbers;
-
     public SimpleController(PersonProperties personProperties) {
         this.personProperties = personProperties;
     }
+
+    @Value("${example.string:'Hello PDP'}")
+    private String string;
+
+    @Value("#{${example.numbers}}")
+    private Map<String, Integer> numbers;
 
     @GetMapping
     public String get() {
@@ -36,7 +31,12 @@ public class SimpleController {
 
     @GetMapping("/lang")
     public List<String> languages() {
-        return languages;
+        return personProperties.getLanguages();
+    }
+
+    @GetMapping("/lang2")
+    public List<String> languages2() {
+        return personProperties.getLanguages2();
     }
 
     @GetMapping("/num")
@@ -49,10 +49,22 @@ public class SimpleController {
         return personProperties.getPerson();
     }
 
+
     @GetMapping("/people")
     public List<Person> getPeoples() {
         return personProperties.getPeoples();
     }
+
+/*
+
+    *//*@Value("${example.languages}")
+    private List<String> languages;*//*
+    @Value("#{'${example.languages}'.split('# ')}")
+    private List<String> languages;
+
+
+
+*/
 
 
 }
