@@ -1,4 +1,4 @@
-package uz.javachi.spring_data_jpa_with_spring_boot;
+package uz.javachi.mapstruct;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

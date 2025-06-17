@@ -1,4 +1,4 @@
-package uz.javachi.spring_data_jpa_with_spring_boot;
+package uz.javachi.mapstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
