@@ -54,17 +54,4 @@ public class SimpleController {
     public List<Person> getPeoples() {
         return personProperties.getPeoples();
     }
-
-/*
-
-    *//*@Value("${example.languages}")
-    private List<String> languages;*//*
-    @Value("#{'${example.languages}'.split('# ')}")
-    private List<String> languages;
-
-
-
-*/
-
-
 }
