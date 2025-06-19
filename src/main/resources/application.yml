@@ -1,11 +1,15 @@
 spring:
   profiles:
     active: test
-  jpa:
-    open-in-view: off
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+  mail:
+    host: 'sandbox.smtp.mailtrap.io'
+    port: 587
+    username: 5b9786580320b8
+    password: f123fd795acc37
     properties:
-      hibernate:
-        format_sql: true
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+  freemarker:
+    template-loader-path: 'classpath:/templates'
