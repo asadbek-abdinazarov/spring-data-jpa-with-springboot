@@ -1,15 +1,6 @@
 spring:
   profiles:
     active: test
-  mail:
-    host: 'sandbox.smtp.mailtrap.io'
-    port: 587
-    username: 5b9786580320b8
-    password: f123fd795acc37
-    properties:
-      smtp:
-        auth: true
-        starttls:
-          enable: true
-  freemarker:
-    template-loader-path: 'classpath:/templates'
+#logging:
+#  level:
+#    root: error
