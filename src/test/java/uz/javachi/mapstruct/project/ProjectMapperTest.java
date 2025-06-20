@@ -1,13 +1,5 @@
 package uz.javachi.mapstruct.project;
 
-import org.junit.jupiter.api.Test;
-import uz.javachi.mapstruct.projectColumn.ProjectColumn;
-
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static uz.javachi.mapstruct.project.ProjectMapper.PROJECT_MAPPER;
 
 class ProjectMapperTest {
 

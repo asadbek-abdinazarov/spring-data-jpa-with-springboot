@@ -7,22 +7,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Random;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/mail")
 public class MailSenderController {
 
 
-
     @PostMapping("/send")
     public String sendMail(@RequestParam String username) throws MessagingException {
-        for (int i = 0; i < 1000; i++) {
-            log.info("Sending mail to {}", username);
-        }
+        log.info("Sending mail to {}", username);
         return "Message Sent";
     }
+
     @PostMapping("/html-send")
     public String sendMailHtml(@RequestParam String username) throws Exception {
+        if (new Random().nextBoolean()) {
+            throw new RuntimeException("Error while sending mail");
+        } else
+            log.info("Sending html to {}", username);
         return "Message Sent";
     }
 

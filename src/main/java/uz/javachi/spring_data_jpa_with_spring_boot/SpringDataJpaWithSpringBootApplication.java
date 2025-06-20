@@ -1,19 +1,20 @@
 package uz.javachi.spring_data_jpa_with_spring_boot;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
-
+@Slf4j
 @SpringBootApplication
 @EnableAsync
 @EnableScheduling
@@ -21,19 +22,35 @@ public class SpringDataJpaWithSpringBootApplication {
 
 
     public static void main(String[] args) {
-       /* class ClockTask extends TimerTask {
-
-            private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-
-            @Override
-            public void run() {
-                System.out.println("\r" + "Time : " + dateFormat.format(new Date()));
-            }
-        }
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new ClockTask(), 4, 2);*/
         SpringApplication.run(SpringDataJpaWithSpringBootApplication.class, args);
 
+    }
+
+    @Configuration
+     static class RegisterBot {
+
+        private final BotConfiguration botConfig;
+
+        RegisterBot(BotConfiguration botConfig) {
+            this.botConfig = botConfig;
+        }
+
+        @EventListener(ContextRefreshedEvent.class)
+        private void init() throws TelegramApiException {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(botConfig);
+        }
+
+        @PostConstruct
+        public void run() {
+            log.info("BOT ISHGA TUSHDI");
+        }
+
+
+        @PreDestroy
+        public void destroy() {
+            log.info("BOT ISHLASHDAN TO'XTADI");
+        }
     }
 
 
