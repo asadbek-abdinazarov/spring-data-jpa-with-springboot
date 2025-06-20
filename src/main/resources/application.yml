@@ -13,6 +13,3 @@ spring:
           enable: true
   freemarker:
     template-loader-path: 'classpath:/templates'
-#logging:
-#  level:
-#    root: warn
