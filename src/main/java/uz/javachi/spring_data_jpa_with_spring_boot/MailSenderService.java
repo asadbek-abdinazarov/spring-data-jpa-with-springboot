@@ -31,7 +31,7 @@ public class MailSenderService {
         this.configuration = configuration;
     }
 
-    @Async
+   /* @Async
     public void sendMail(String username) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
@@ -116,5 +116,5 @@ public class MailSenderService {
         mimeMessageHelper.setText(htmlContent, true);
 
         mailSender.send(mimeMessage);
-    }
+    }*/
 }
